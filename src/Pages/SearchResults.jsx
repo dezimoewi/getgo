@@ -8,23 +8,32 @@ import LanguageCard from "../component/LanguageCard";
 import ActivitiesList from "../component/ActivitiesList";
 import { fetchAttractions } from "../hooks/geoapify";
 
+// Attractions list component
 function AttractionsList({ lat, lon, limit = 10 }) {
   const [attractions, setAttractions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!lat || !lon) return;
+
+    let isMounted = true;
+
     async function getAttractions() {
-      setLoading(true);
       try {
         const data = await fetchAttractions(lat, lon, limit);
-        setAttractions(data);
+        if (isMounted) setAttractions(data);
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
-    if (lat && lon) getAttractions();
+
+    getAttractions();
+
+    return () => {
+      isMounted = false;
+    };
   }, [lat, lon, limit]);
 
   if (loading) return <p className="text-gray-500">Loading attractions...</p>;
@@ -47,23 +56,44 @@ function AttractionsList({ lat, lon, limit = 10 }) {
   );
 }
 
+// Main SearchResults component
 export default function SearchResults() {
   const { state } = useLocation();
-  if (!state) return <Navigate to="/" />;
+  const { lat, lon, country, city, countryCode: passedCode } = state || {};
 
-  const { lat, lon, country, city, countryCode: passedCode } = state;
+  // Hooks always run
   const [countryCode, setCountryCode] = useState(passedCode || null);
   const [loadingCode, setLoadingCode] = useState(!passedCode);
 
+  // Fetch country code safely
   useEffect(() => {
-    if (!countryCode && country) {
-      setLoadingCode(true);
-      fetch(`https://restcountries.com/v3.1/name/${country}?fullText=true`)
-        .then((res) => res.json())
-        .then((data) => setCountryCode(data?.[0]?.cca2 || null))
-        .finally(() => setLoadingCode(false));
+    if (countryCode || !country) return;
+
+    let isMounted = true;
+
+    async function fetchCountryCode() {
+      try {
+        const res = await fetch(
+          `https://restcountries.com/v3.1/name/${country}?fullText=true`
+        );
+        const data = await res.json();
+        if (isMounted) setCountryCode(data?.[0]?.cca2 || null);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (isMounted) setLoadingCode(false);
+      }
     }
+
+    fetchCountryCode();
+
+    return () => {
+      isMounted = false;
+    };
   }, [country, countryCode]);
+
+  // Redirect if missing required state
+  if (!lat || !lon) return <Navigate to="/" />;
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6">
@@ -78,18 +108,14 @@ export default function SearchResults() {
           </h1>
         </div>
 
-        {lat && lon && (
-          <div className="bg-white rounded-xl shadow overflow-hidden">
-            <Map lat={lat} lon={lon} />
-          </div>
-        )}
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          <Map lat={lat} lon={lon} />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {lat && lon && (
-            <div className="bg-white rounded-xl shadow p-4">
-              <WeatherCard lat={lat} lon={lon} />
-            </div>
-          )}
+          <div className="bg-white rounded-xl shadow p-4">
+            <WeatherCard lat={lat} lon={lon} />
+          </div>
 
           {loadingCode ? (
             <div className="bg-white rounded-xl shadow p-4 text-gray-500">
@@ -109,15 +135,13 @@ export default function SearchResults() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {lat && lon && <AttractionsList lat={lat} lon={lon} />}
-          {lat && lon && <ActivitiesList lat={lat} lon={lon} />}
+          <AttractionsList lat={lat} lon={lon} />
+          <ActivitiesList lat={lat} lon={lon} />
         </div>
 
-        {lat && lon && country && (
-          <div className="bg-white rounded-xl shadow p-4">
-            <AirportInfo lat={lat} lon={lon} country={country} />
-          </div>
-        )}
+        <div className="bg-white rounded-xl shadow p-4">
+          <AirportInfo lat={lat} lon={lon} country={country} />
+        </div>
       </div>
     </div>
   );
