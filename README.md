@@ -1,19 +1,64 @@
-# React + Vite
+# GetGo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A travel discovery web app that lets you search for any city in the world and instantly view useful travel information — weather, currency exchange rates, local languages, and nearby attractions.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **City Search** — Autocomplete-powered search using OpenStreetMap Nominatim (free, no API key required)
+- **Weather** — Current temperature, conditions, and a 4-day forecast via Open-Meteo
+- **Currency Converter** — Live USD exchange rates with an interactive converter (Open Exchange Rates API)
+- **Languages** — Official languages spoken in the destination country (REST Countries API)
+- **Nearby Attractions** — Points of interest fetched from OpenStreetMap via the Overpass API
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- **React 19** + **Vite**
+- **Tailwind CSS v4** (with the `@tailwindcss/vite` plugin)
+- **Axios** for HTTP requests
+- **React Icons** for weather icons
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# getgo
-# getgo
-# getgo
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## APIs Used
+
+| API | Purpose | Key Required |
+|-----|---------|:------------:|
+| [Nominatim](https://nominatim.openstreetmap.org/) | City geocoding & search | No |
+| [Open-Meteo](https://open-meteo.com/) | Weather data | No |
+| [Overpass API](https://overpass-api.de/) | Nearby attractions (OSM) | No |
+| [REST Countries](https://restcountries.com/) | Languages & currencies | No |
+| [Open Exchange Rates](https://open.er-api.com/) | Currency conversion | No |
+
+All APIs are free and require no authentication.
+
+## Project Structure
+
+```
+src/
+├── App.jsx              # Main app layout and data fetching
+├── index.css            # Tailwind imports and custom utilities
+├── components/
+│   ├── SearchBar.jsx    # City search with autocomplete dropdown
+│   ├── WeatherCard.jsx  # Current weather + forecast
+│   ├── CurrencyCard.jsx # Currency converter
+│   ├── LanguageCard.jsx # Languages spoken
+│   ├── AttractionsGrid.jsx # Nearby points of interest
+│   └── Loader.jsx       # Loading spinner overlay
+└── utils/
+    └── api.js           # All API fetch functions
+```
+
+## License
+
+MIT
