@@ -59,20 +59,20 @@ function App() {
       {error && <p className="text-center text-rose-400 mt-8">{error}</p>}
 
       {place && !loading && (
-        <div className="max-w-5xl mx-auto px-6 pb-20">
-          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-10 text-white/90">
-            Exploring <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">{place.name}</span>
+        <div className="max-w-5xl mx-auto px-6 pb-20 bg-white text-slate-800 rounded-t-3xl -mt-4 pt-10 min-h-screen">
+          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-10 text-slate-700">
+            Exploring <span className="text-violet-600 font-bold">{place.name}</span>
           </h2>
 
           {/* Info cards — 3 compact columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-            <div className="glass rounded-2xl p-6 glass-hover">
+            <div className="rounded-2xl p-6 bg-slate-50 border border-slate-200 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md">
               <WeatherCard data={data.weather} />
             </div>
-            <div className="glass rounded-2xl p-6 glass-hover">
+            <div className="rounded-2xl p-6 bg-slate-50 border border-slate-200 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md">
               <CurrencyCard rates={data.rates} country={data.country} />
             </div>
-            <div className="glass rounded-2xl p-6 glass-hover">
+            <div className="rounded-2xl p-6 bg-slate-50 border border-slate-200 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md">
               <LanguageCard country={data.country} />
             </div>
           </div>
