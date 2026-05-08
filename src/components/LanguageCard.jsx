@@ -6,7 +6,6 @@ const LanguageCard = ({ country }) => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-2xl">🗣️</span>
         <h3 className="text-lg font-semibold text-white/90">Languages</h3>
       </div>
       {languages.length > 0 ? (
