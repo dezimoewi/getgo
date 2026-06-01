@@ -11,7 +11,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className="home-navbar">
         <Link to="/" className="home-brand">
-          Get<span>Go</span> ✈️
+          Get<span>Go</span>
         </Link>
         <div className="home-nav-links">
           <Link to="/">Home</Link>
@@ -22,10 +22,10 @@ export default function Home() {
       {/* Hero Section */}
       <header className="home-hero">
         <h1>
-          Discover your next <span className="gradient-text">adventure</span>
+          Discover your next<br /><span className="gradient-text">adventure</span>
         </h1>
         <p>
-          Search any city to explore weather, attractions, airports and more — all in one place.
+          Search any city to explore weather, attractions, airports and more — all in one beautifully crafted experience.
         </p>
         <SearchBar />
       </header>
@@ -53,7 +53,7 @@ export default function Home() {
       <section className="home-cta glass">
         <h2>Ready to explore the world?</h2>
         <p>Start planning your dream trip in seconds.</p>
-        <Link to="/search" className="cta-btn">Begin Exploring</Link>
+        <Link to="/search" className="cta-btn">Begin Exploring →</Link>
       </section>
 
       {/* Footer */}

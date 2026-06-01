@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, Navigate } from "react-router-dom";
+import { useLocation, Navigate, Link } from "react-router-dom";
 import Map from "../component/Map";
 import WeatherCard from "../component/WeatherCard";
 import AirportInfo from "../component/AirportInfo";
@@ -41,7 +41,10 @@ function AttractionsList({ lat, lon, limit = 10 }) {
 
   return (
     <div className="card attractions-list">
-      <h3>Popular Attractions</h3>
+      <div className="section-header">
+        <span className="section-icon attractions">🏛️</span>
+        <h3>Popular Attractions</h3>
+      </div>
       <ul>
         {attractions.map((poi) => (
           <li key={poi.properties.place_id}>
@@ -69,7 +72,7 @@ export default function SearchResults() {
     async function fetchCountryCode() {
       try {
         const res = await fetch(
-          `https://restcountries.com/v3.1/name/${country}?fullText=true`
+          `https://restcountries.com/v3.1/name/${encodeURIComponent(country)}?fullText=true`
         );
         const data = await res.json();
         if (isMounted) setCountryCode(data?.[0]?.cca2 || null);
@@ -91,29 +94,39 @@ export default function SearchResults() {
 
   return (
     <div className="results-page">
+      {/* Sticky Navigation */}
+      <nav className="results-nav">
+        <Link to="/" className="results-nav-brand">
+          Get<span>Go</span>
+        </Link>
+        <Link to="/" className="results-nav-back">
+          ← New Search
+        </Link>
+      </nav>
+
       <div className="results-container">
-
-        <div className="card">
-          <h1 className="card-title">
-            {city}
-            <span className="sub">
-              {country && `(${country})`}
-            </span>
-          </h1>
+        {/* Page Header */}
+        <div className="results-header">
+          <h1>{city || "Destination"}</h1>
+          {country && <p className="location-sub">{country}</p>}
         </div>
 
-        <div className="map-wrapper">
-          <Map lat={lat} lon={lon} />
-        </div>
+        {/* Map */}
+        <Map lat={lat} lon={lon} city={city} country={country} />
 
+        {/* Weather & Currency Row */}
         <div className="grid-2">
           <div className="card">
+            <div className="section-header">
+              <span className="section-icon weather">🌤️</span>
+              <h3>Weather</h3>
+            </div>
             <WeatherCard lat={lat} lon={lon} />
           </div>
 
           {loadingCode ? (
             <div className="card">
-              <p className="loading-text">Loading currency...</p>
+              <div className="skeleton skeleton-card" style={{ height: '120px' }}></div>
             </div>
           ) : countryCode ? (
             <div className="card">
@@ -122,18 +135,31 @@ export default function SearchResults() {
           ) : null}
         </div>
 
+        {/* Language */}
         {countryCode && (
           <div className="card">
+            <div className="section-header">
+              <span className="section-icon language">🗣️</span>
+              <h3>Languages Spoken</h3>
+            </div>
             <LanguageCard countryCode={countryCode} />
           </div>
         )}
 
+        {/* Attractions & Activities */}
         <div className="grid-2">
           <AttractionsList lat={lat} lon={lon} />
-          <ActivitiesList lat={lat} lon={lon} />
+          <div className="card">
+            <ActivitiesList lat={lat} lon={lon} city={city} country={country} />
+          </div>
         </div>
 
+        {/* Airport */}
         <div className="card">
+          <div className="section-header">
+            <span className="section-icon airport">✈️</span>
+            <h3>Nearby Airports</h3>
+          </div>
           <AirportInfo lat={lat} lon={lon} country={country} />
         </div>
       </div>
