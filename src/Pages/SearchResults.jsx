@@ -8,7 +8,6 @@ import LanguageCard from "../component/LanguageCard";
 import ActivitiesList from "../component/ActivitiesList";
 import { fetchAttractions } from "../hooks/geoapify";
 
-// Attractions list component
 function AttractionsList({ lat, lon, limit = 10 }) {
   const [attractions, setAttractions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +55,6 @@ function AttractionsList({ lat, lon, limit = 10 }) {
   );
 }
 
-// Main SearchResults component
 export default function SearchResults() {
   const { state } = useLocation();
   const { lat, lon, country, city, countryCode: passedCode } = state || {};

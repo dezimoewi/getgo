@@ -1,4 +1,3 @@
-//geaoapi
 const API_KEY = import.meta.env.VITE_GEOAPIFY_KEY;
 
 export async function fetchAttractions(lat, lon, limit = 10) {

@@ -1,5 +1,3 @@
-////usegeoapi
-
 import { useState } from "react";
 
 export function useGeocode() {

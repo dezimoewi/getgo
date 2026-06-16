@@ -1,5 +1,3 @@
-///opentrip
-
 const KEY = import.meta.env.VITE_OPENTRIPMAP_KEY;
 const BASE = "https://api.opentripmap.com/0.1/en/places";
 
