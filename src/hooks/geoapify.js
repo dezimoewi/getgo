@@ -1,5 +1,16 @@
 const API_KEY = import.meta.env.VITE_GEOAPIFY_KEY;
 
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371000; // Earth radius in meters
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export async function fetchAttractions(lat, lon, limit = 10) {
   try {
     const url = `https://api.geoapify.com/v2/places?categories=tourism,entertainment,accommodation,catering&filter=circle:${lon},${lat},5000&limit=${limit}&apiKey=${API_KEY}`;
@@ -44,15 +55,22 @@ export async function fetchNearestAirport(lat, lon, countryCode = null) {
       if (data.features && data.features.length > 0) {
         return data.features.map((a) => {
           const props = a.properties;
+          const airportLat = props.lat;
+          const airportLon = props.lon;
+          const dist = haversineDistance(lat, lon, airportLat, airportLon);
+          const iataCode =
+            props.iata ||
+            props.datasource?.raw?.iata ||
+            "";
           return {
             id: props.place_id,
             name: props.name || "Unnamed Airport",
             type: props.subclass || "Unknown Type",
-            iata: props.iata || "",
-            icao: props.icao || "",
-            lat: props.lat,
-            lon: props.lon,
-            distance: Math.round(props.distance || 0),
+            iata: iataCode,
+            icao: props.icao || props.datasource?.raw?.icao || "",
+            lat: airportLat,
+            lon: airportLon,
+            distance: Math.round(dist),
           };
         });
       }
