@@ -27,11 +27,11 @@ export async function fetchAttractions(lat, lon, limit = 10) {
 export async function fetchNearestAirport(lat, lon, countryCode = null) {
   const API_KEY = import.meta.env.VITE_GEOAPIFY_KEY;
   const categories = [
-    "airport.international",
-    "airport.private",
-    "airport.military",
-    "airport.airfield",
-    "airport.gliding",
+    "transport.airport.international",
+    "transport.airport.private",
+    "transport.airport.military",
+    "transport.airport.airfield",
+    "transport.airport.gliding",
   ].join(",");
 
   let radius = 50000;
@@ -55,19 +55,24 @@ export async function fetchNearestAirport(lat, lon, countryCode = null) {
       if (data.features && data.features.length > 0) {
         return data.features.map((a) => {
           const props = a.properties;
-          const airportLat = props.lat;
-          const airportLon = props.lon;
-          const dist = haversineDistance(lat, lon, airportLat, airportLon);
+          const airportLat = parseFloat(props.lat);
+          const airportLon = parseFloat(props.lon);
+          const dist = haversineDistance(
+            parseFloat(lat),
+            parseFloat(lon),
+            airportLat,
+            airportLon
+          );
           const iataCode =
-            props.iata ||
             props.datasource?.raw?.iata ||
+            props.iata ||
             "";
           return {
             id: props.place_id,
             name: props.name || "Unnamed Airport",
             type: props.subclass || "Unknown Type",
             iata: iataCode,
-            icao: props.icao || props.datasource?.raw?.icao || "",
+            icao: props.datasource?.raw?.icao || props.icao || "",
             lat: airportLat,
             lon: airportLon,
             distance: Math.round(dist),
