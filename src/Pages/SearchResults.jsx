@@ -20,7 +20,7 @@ function AttractionsList({ lat, lon, limit = 10 }) {
     async function getAttractions() {
       try {
         const data = await fetchAttractions(lat, lon, limit);
-        if (isMounted) setAttractions(data.filter((poi) => poi.properties.name));
+        if (isMounted) setAttractions(data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -47,7 +47,7 @@ function AttractionsList({ lat, lon, limit = 10 }) {
       <ul>
         {attractions.map((poi) => (
           <li key={poi.properties.place_id}>
-            {poi.properties.name}
+            {poi.properties.name || "Unnamed place"}
           </li>
         ))}
       </ul>
