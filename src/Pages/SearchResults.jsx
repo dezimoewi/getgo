@@ -7,6 +7,7 @@ import CurrencyCard from "../component/CurrencyCard";
 import LanguageCard from "../component/LanguageCard";
 import ActivitiesList from "../component/ActivitiesList";
 import { fetchAttractions } from "../hooks/geoapify";
+import { getCurrencyForCountry, getLanguagesForCountry } from "../utils/countryCurrency";
 
 function AttractionsList({ lat, lon, limit = 10 }) {
   const [attractions, setAttractions] = useState([]);
@@ -57,36 +58,30 @@ function AttractionsList({ lat, lon, limit = 10 }) {
 
 export default function SearchResults() {
   const { state } = useLocation();
-  const { lat, lon, country, city, countryCode: passedCode } = state || {};
 
-  const [countryCode, setCountryCode] = useState(passedCode || null);
-  const [loadingCode, setLoadingCode] = useState(!passedCode);
+  // Extract the ISO 3166-1 alpha-2 code from router state (passedCode / geocode.countryCode)
+  // so we never need restcountries.com.
+  const {
+    lat,
+    lon,
+    country,
+    city,
+    countryCode: passedCode,
+    country_code,
+    geocode,
+  } = state || {};
 
-  useEffect(() => {
-    if (countryCode || !country) return;
+  const extractedCode =
+    passedCode ||
+    country_code ||
+    geocode?.countryCode ||
+    geocode?.country_code ||
+    null;
 
-    let isMounted = true;
+  const countryCode = extractedCode ? String(extractedCode).toUpperCase() : null;
 
-    async function fetchCountryCode() {
-      try {
-        const res = await fetch(
-          `https://restcountries.com/v3.1/name/${encodeURIComponent(country)}?fullText=true`
-        );
-        const data = await res.json();
-        if (isMounted) setCountryCode(data?.[0]?.cca2 || null);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        if (isMounted) setLoadingCode(false);
-      }
-    }
-
-    fetchCountryCode();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [country, countryCode]);
+  const currency = countryCode ? getCurrencyForCountry(countryCode) : null;
+  const languages = countryCode ? getLanguagesForCountry(countryCode) : [];
 
   if (!lat || !lon) return <Navigate to="/" />;
 
@@ -122,15 +117,11 @@ export default function SearchResults() {
             <WeatherCard lat={lat} lon={lon} />
           </div>
 
-          {loadingCode ? (
+          {countryCode && (
             <div className="card">
-              <div className="skeleton skeleton-card" style={{ height: '120px' }}></div>
+              <CurrencyCard currency={currency} />
             </div>
-          ) : countryCode ? (
-            <div className="card">
-              <CurrencyCard countryCode={countryCode} />
-            </div>
-          ) : null}
+          )}
         </div>
 
         {/* Language */}
@@ -140,7 +131,7 @@ export default function SearchResults() {
               <span className="section-icon language">🗣️</span>
               <h3>Languages Spoken</h3>
             </div>
-            <LanguageCard countryCode={countryCode} />
+            <LanguageCard languages={languages} />
           </div>
         )}
 
@@ -164,3 +155,4 @@ export default function SearchResults() {
     </div>
   );
 }
+
