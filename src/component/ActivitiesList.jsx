@@ -108,7 +108,16 @@ export default function ActivitiesList({
               />
 
               <div className="activity-card-body">
-                <h4>{poi.properties.name || "Unnamed place"}</h4>
+                <h4>
+                  {(() => {
+                    const name = poi?.properties?.name;
+                    if (!name || String(name).trim() === "" || String(name) === "Unnamed place") {
+                      return poi.category || "Point of Interest";
+                    }
+                    return name;
+                  })()}
+                </h4>
+
 
                 <span className="activity-badge">
                   {poi.category}
