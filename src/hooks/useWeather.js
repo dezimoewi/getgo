@@ -1,6 +1,3 @@
-///useweather
-
-
 import { useState, useEffect } from "react";
 
 export default function useWeather(lat, lon) {

@@ -1,4 +1,3 @@
-///AirportInfo.jsx
 import React, { useEffect, useState } from "react";
 import { fetchNearestAirport } from "../hooks/geoapify";
 
@@ -15,7 +14,7 @@ export default function AirportInfo({ lat, lon }) {
       setError(null);
 
       try {
-        const data = await fetchNearestAirport(lat, lon, null, 10); 
+        const data = await fetchNearestAirport(lat, lon, null, 10);
         if (data.length === 0) {
           setError("No nearby airports found within 1000 km.");
         } else {
@@ -39,16 +38,18 @@ export default function AirportInfo({ lat, lon }) {
     return <div className="error-text">{error}</div>;
 
   return (
-    <div>
-      <h3 style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem' }}>Nearby Airports</h3>
-      <ul className="airport-list">
-        {airports.map((airport) => (
-          <li key={airport.id}>
-            {airport.name} ({airport.iata || "N/A"}) —{" "}
-            {(airport.distance / 1000).toFixed(1)} km away
-          </li>
-        ))}
-      </ul>
+    <div className="airport-grid">
+      {airports.map((airport) => (
+        <div key={airport.id} className="airport-item">
+          <div className="airport-item-info">
+            <span className="airport-iata">{airport.iata || "—"}</span>
+            <span className="airport-name">{airport.name}</span>
+          </div>
+          <span className="airport-distance">
+            {(airport.distance / 1000).toFixed(1)} km
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 
 export default function LanguageCard({ countryCode }) {
   const [languages, setLanguages] = useState([]);
-  const [status, setStatus] = useState("idle"); 
+  const [status, setStatus] = useState("idle");
+
   useEffect(() => {
     if (!countryCode) return;
 
@@ -11,7 +12,7 @@ export default function LanguageCard({ countryCode }) {
     async function fetchLanguages() {
       setStatus("loading");
       try {
-        const res = await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`);
+        const res = await fetch(`https://restcountries.com/v3.1/alpha/${encodeURIComponent(countryCode)}`);
         const data = await res.json();
         if (cancelled) return;
 
@@ -34,13 +35,10 @@ export default function LanguageCard({ countryCode }) {
   if (!languages.length) return null;
 
   return (
-    <div>
-      <h3 style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Languages Spoken</h3>
-      <ul className="language-list">
-        {languages.map((lang, index) => (
-          <li key={index}>{lang}</li>
-        ))}
-      </ul>
+    <div className="language-tags">
+      {languages.map((lang, index) => (
+        <span key={index} className="language-tag">{lang}</span>
+      ))}
     </div>
   );
 }

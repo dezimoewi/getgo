@@ -1,5 +1,3 @@
-//useattactions.js
-
 export async function fetchAttractions(lat, lon) {
   const API = import.meta.env.VITE_GEOAPIFY_KEY;
 
