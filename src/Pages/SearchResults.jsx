@@ -59,8 +59,6 @@ function AttractionsList({ lat, lon, limit = 10 }) {
 export default function SearchResults() {
   const { state } = useLocation();
 
-  // Extract the ISO 3166-1 alpha-2 code from router state (passedCode / geocode.countryCode)
-  // so we never need restcountries.com.
   const {
     lat,
     lon,
@@ -87,7 +85,6 @@ export default function SearchResults() {
 
   return (
     <div className="results-page">
-      {/* Sticky Navigation */}
       <nav className="results-nav">
         <Link to="/" className="results-nav-brand">
           Get<span>Go</span>
@@ -98,16 +95,13 @@ export default function SearchResults() {
       </nav>
 
       <div className="results-container">
-        {/* Page Header */}
         <div className="results-header">
           <h1>{city || "Destination"}</h1>
           {country && <p className="location-sub">{country}</p>}
         </div>
 
-        {/* Map */}
         <Map lat={lat} lon={lon} city={city} country={country} />
 
-        {/* Weather & Currency Row */}
         <div className="grid-2">
           <div className="card">
             <div className="section-header">
@@ -124,7 +118,6 @@ export default function SearchResults() {
           )}
         </div>
 
-        {/* Language */}
         {countryCode && (
           <div className="card">
             <div className="section-header">
@@ -135,7 +128,6 @@ export default function SearchResults() {
           </div>
         )}
 
-        {/* Attractions & Activities */}
         <div className="grid-2">
           <AttractionsList lat={lat} lon={lon} />
           <div className="card">
@@ -143,7 +135,6 @@ export default function SearchResults() {
           </div>
         </div>
 
-        {/* Airport */}
         <div className="card">
           <div className="section-header">
             <span className="section-icon airport">✈️</span>

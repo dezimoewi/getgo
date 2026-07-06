@@ -1,6 +1,3 @@
-// Static map of ISO 3166-1 alpha-2 country codes to their primary currency and languages.
-// This replaces the deprecated restcountries.com v3.1 API dependency.
-
 export const COUNTRY_DATA = {
   AD: { currency: "EUR", languages: ["Catalan"] },
   AE: { currency: "AED", languages: ["Arabic"] },
@@ -198,20 +195,10 @@ export const COUNTRY_DATA = {
   ZW: { currency: "ZWL", languages: ["Shona", "Ndebele", "English"] },
 };
 
-/**
- * Returns the primary currency code for a given ISO 3166-1 alpha-2 country code.
- * @param {string} countryCode  e.g. "FR"
- * @returns {string|null}
- */
 export function getCurrencyForCountry(countryCode) {
   return COUNTRY_DATA[countryCode?.toUpperCase()]?.currency ?? null;
 }
 
-/**
- * Returns the languages spoken in a country.
- * @param {string} countryCode  e.g. "FR"
- * @returns {string[]}
- */
 export function getLanguagesForCountry(countryCode) {
   return COUNTRY_DATA[countryCode?.toUpperCase()]?.languages ?? [];
 }

@@ -5,10 +5,8 @@ import SearchBar from "../component/SearchBar";
 export default function Home() {
   return (
     <div className="home-page">
-      {/* Radial glow overlay */}
       <div className="home-glow"></div>
 
-      {/* Navbar */}
       <nav className="home-navbar">
         <Link to="/" className="home-brand">
           Get<span>Go</span>
@@ -19,7 +17,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <header className="home-hero">
         <h1>
           Discover your next<br /><span className="gradient-text">adventure</span>
@@ -30,7 +27,6 @@ export default function Home() {
         <SearchBar />
       </header>
 
-      {/* Features */}
       <section className="home-features">
         <div className="feature-card glass">
           <div className="feature-icon">🌤️</div>
@@ -49,14 +45,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="home-cta glass">
         <h2>Ready to explore the world?</h2>
         <p>Start planning your dream trip in seconds.</p>
         <Link to="/search" className="cta-btn">Begin Exploring →</Link>
       </section>
 
-      {/* Footer */}
       <footer className="home-footer">
         <p>&copy; 2025 GetGo. All rights reserved.</p>
         <p className="sub">Designed for seamless travel planning</p>

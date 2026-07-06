@@ -28,16 +28,13 @@ export default function DestinationPage({ destination }) {
 
   return (
     <div className="space-y-6 p-4">
-      {/* Map at top */}
       <Map lat={lat} lon={lon} places={places} />
 
-      {/* Destination Info */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">{name}</h2>
         <div className="text-sm text-slate-600">{country}</div>
       </div>
 
-      {/* Weather, POIs, Currency, Airport */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
           <WeatherCard lat={lat} lon={lon} />

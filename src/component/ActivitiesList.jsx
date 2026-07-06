@@ -153,7 +153,6 @@ export default function ActivitiesList({
   );
 }
 
-/* Helpers */
 function resolveCategory(poi) {
   const raw = poi.properties?.datasource?.raw;
   if (!raw) return "Attraction";

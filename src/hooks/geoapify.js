@@ -34,7 +34,7 @@ export async function fetchNearestAirport(lat, lon, countryCode = null) {
       return null;
     }
 
-    const R = 6371e3; // meters
+    const R = 6371e3;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
 
@@ -74,7 +74,6 @@ export async function fetchNearestAirport(lat, lon, countryCode = null) {
           const airportLat = props.lat;
           const airportLon = props.lon;
 
-          // Prefer Geoapify's provided distance (meters). If absent, compute locally.
           const geoapifyDistanceM =
             typeof props.distance === "number" ? props.distance : null;
 
@@ -101,11 +100,9 @@ export async function fetchNearestAirport(lat, lon, countryCode = null) {
         });
       }
 
-      console.log(`No airports found within ${radius / 1000} km, expanding search...`);
       radius += step;
     }
 
-    console.log(`No airports found within ${maxRadius / 1000} km.`);
     return [];
   } catch (error) {
     console.error("Airport fetch failed:", error);
