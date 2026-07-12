@@ -36,8 +36,13 @@ function AttractionsList({ lat, lon, limit = 10 }) {
     };
   }, [lat, lon, limit]);
 
+  const visibleAttractions = attractions.filter((poi) => {
+    const name = poi?.properties?.name;
+    return name && String(name).trim() !== "" && String(name) !== "Unnamed place";
+  });
+
   if (loading) return <p className="loading-text">Loading attractions...</p>;
-  if (!attractions.length) return <p>No attractions found.</p>;
+  if (!visibleAttractions.length) return <p>No attractions found.</p>;
 
   return (
     <div className="card attractions-list">
@@ -46,9 +51,9 @@ function AttractionsList({ lat, lon, limit = 10 }) {
         <h3>Popular Attractions</h3>
       </div>
       <ul>
-        {attractions.map((poi) => (
+        {visibleAttractions.map((poi) => (
           <li key={poi.properties.place_id}>
-            {poi.properties.name || "Unnamed place"}
+            {poi.properties.name}
           </li>
         ))}
       </ul>
