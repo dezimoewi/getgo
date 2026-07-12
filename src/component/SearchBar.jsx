@@ -26,6 +26,7 @@ export default function SearchBar() {
         lon: result.lon,
         country: result.country,
         city: result.city,
+        countryCode: result.countryCode,
       },
     });
   }

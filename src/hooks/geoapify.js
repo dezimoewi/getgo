@@ -23,13 +23,39 @@ export async function fetchNearestAirport(lat, lon, countryCode = null) {
     "airport.gliding",
   ].join(",");
 
+  function toRad(deg) {
+    return (deg * Math.PI) / 180;
+  }
+
+  function haversineMeters(lat1, lon1, lat2, lon2) {
+    if (
+      [lat1, lon1, lat2, lon2].some((v) => typeof v !== "number" || Number.isNaN(v))
+    ) {
+      return null;
+    }
+
+    const R = 6371e3;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
   let radius = 50000;
-  const maxRadius = 1500000; 
+  const maxRadius = 1500000;
   const step = 50000;
   try {
     while (radius <= maxRadius) {
       let url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${lon},${lat},${radius}&limit=10&apiKey=${API_KEY}`;
-      
+
       if (countryCode && typeof countryCode === "string") {
         url += `&filter=countrycode:${countryCode.toUpperCase()}`;
       }
@@ -44,30 +70,46 @@ export async function fetchNearestAirport(lat, lon, countryCode = null) {
       if (data.features && data.features.length > 0) {
         return data.features.map((a) => {
           const props = a.properties;
+
+          const airportLat = props.lat;
+          const airportLon = props.lon;
+
+          const geoapifyDistanceM =
+            typeof props.distance === "number" ? props.distance : null;
+
+          const computedDistanceM = haversineMeters(
+            lat,
+            lon,
+            airportLat,
+            airportLon
+          );
+
+          const distanceM =
+            geoapifyDistanceM ?? computedDistanceM ?? 0;
+
           return {
             id: props.place_id,
             name: props.name || "Unnamed Airport",
             type: props.subclass || "Unknown Type",
             iata: props.iata || "",
             icao: props.icao || "",
-            lat: props.lat,
-            lon: props.lon,
-            distance: Math.round(props.distance || 0),
+            lat: airportLat,
+            lon: airportLon,
+            distance: Math.round(distanceM),
           };
         });
       }
 
-      console.log(`No airports found within ${radius / 1000} km, expanding search...`);
       radius += step;
     }
 
-    console.log(`No airports found within ${maxRadius / 1000} km.`);
     return [];
   } catch (error) {
     console.error("Airport fetch failed:", error);
     return [];
   }
 }
+
 
 
 
